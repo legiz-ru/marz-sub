@@ -177,9 +177,6 @@ jq --arg domain "$DOMAIN" --arg server_ip "$SERVER_IP" '
     fi
 done
 
-# Обновление или добавление настроек в .env файл
-env_file="/opt/marzban/.env"
-
 update_or_add() {
     local key="$1"
     local value="$2"
