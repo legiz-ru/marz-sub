@@ -38,7 +38,8 @@ while true; do
     echo "1) marz-sub fork by legiz (https://github.com/cortez24rus/marz-sub)"
     echo "2) marzbanify-template fork by legiz (https://github.com/legiz-ru/marzbanify-template)"
     echo "3) marzban-sub-page by streletskiy (https://github.com/streletskiy/marzban-sub-page)"
-    echo "4) your web sub template https link"
+    echo "4) marz-sub fork by sm1ky (https://github.com/sm1ky/marzban-sub)"
+    echo "5) your web sub template https link"
     read -p "Введите номер шаблона: " choice
 
     if [ "$choice" -eq 1 ]; then
@@ -58,6 +59,12 @@ while true; do
         sed -i -e "s|https://t.me/gozargah_marzban|$tg_escaped_link|g" -e "s|https://github.com/Gozargah/Marzban#donation|$tg_escaped_link|g" "$base_dir/subscription/index.html"
         break
     elif [ "$choice" -eq 4 ]; then
+        shablonurl="https://github.com/sm1ky/marzban-sub/raw/master/index.html"
+        wget -O "$base_dir/subscription/index.html" "$shablonurl" || echo "Ошибка загрузки index.html"
+        sleep 1
+        sed -i -e "s|https://t.me/gozargah_marzban|$tg_escaped_link|g" -e "s|https://github.com/Gozargah/Marzban#donation|$tg_escaped_link|g" "$base_dir/subscription/index.html"
+        break
+    elif [ "$choice" -eq 5 ]; then
         read -p "Введите URL для загрузки: " custom_url
         if [[ "$custom_url" =~ ^https?:// ]]; then
             shablonurl="$custom_url"

@@ -29,6 +29,7 @@ A simple html template to better display user information
   - [fork marz-sub](https://github.com/cortez24rus/marz-sub/)
   - [marzbanify-template fork by legiz](https://github.com/legiz-ru/marzbanify-template)
   - [marzban-sub-page by streletskiy](https://github.com/streletskiy/marzban-sub-page)
+  - [fork marz-sub by sm1ky](https://github.com/sm1ky/marzban-sub)
   - your link template
 - sing-box client config based on:
   - [secret-sing-box](https://github.com/BLUEBL0B/Secret-Sing-Box/) (relevant for Russia)
