@@ -1,7 +1,24 @@
 #!/bin/bash
 
-# Определение путей к директориям
-base_dir="/var/lib/marzban/templates"
+# Выбор типа установки
+echo "Выберите тип установки:"
+echo "1) cortez reverse proxy"
+echo "2) Akiyamov xray-vps-setup"
+while true; do
+    read -p "Введите номер типа установки (1 или 2): " install_choice
+    if [ "$install_choice" -eq 1 ]; then
+        base_dir="/var/lib/marzban/templates"
+        env_file="/opt/marzban/.env"
+        break
+    elif [ "$install_choice" -eq 2 ]; then
+        base_dir="/opt/xray-vps-setup/marzban/templates"
+        env_file="/opt/xray-vps-setup/marzban/.env"
+        break
+    else
+        echo "Неверный выбор. Попробуйте снова."
+    fi
+done
+
 declare -a dirs=("singbox" "v2ray" "clash" "subscription")
 
 # Создание директорий, если они не существуют
@@ -128,7 +145,7 @@ while true; do
         wget -O "$base_dir/singbox/default.json" "https://github.com/cortez24rus/marz-sub/raw/main/singbox/ssb.json" || echo "Ошибка загрузки ssb.json"
         # Получение переменных DOMAIN и SERVER-IP
         sleep 1
-        DOMAIN=$(grep "XRAY_SUBSCRIPTION_URL_PREFIX" /opt/marzban/.env | cut -d '"' -f 2 | sed 's|https://||')
+        DOMAIN=$(grep "XRAY_SUBSCRIPTION_URL_PREFIX" "$env_file" | cut -d '"' -f 2 | sed 's|https://||')
         sleep 1
         SERVER_IP=$(wget -qO- https://ipinfo.io/ip)
         sleep 1
@@ -159,9 +176,6 @@ jq --arg domain "$DOMAIN" --arg server_ip "$SERVER_IP" '
         echo "Неверный выбор. Попробуйте снова."
     fi
 done
-
-# Обновление или добавление настроек в .env файл
-env_file="/opt/marzban/.env"
 
 update_or_add() {
     local key="$1"
