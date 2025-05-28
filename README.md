@@ -4,7 +4,7 @@
   </a>
 </p>
 
-This template use in [marz-reverse-proxy install script](https://github.com/cortez24rus/marz-reverse-proxy)
+marz-sub.sh support [marz-reverse-proxy install script](https://github.com/cortez24rus/marz-reverse-proxy) & [xray-vps-setup](https://github.com/Akiyamov/xray-vps-setup/)
 
 # Table of Contents
 - [Attributes](#Attributes)
@@ -44,7 +44,7 @@ A simple html template to better display user information
 # Installation Steps
 1. Run script
 ```sh
-bash <(curl -Ls https://github.com/cortez24rus/marz-sub/raw/main/marz-sub.sh)
+bash <(curl -Ls https://github.com/legiz-ru/marz-sub/raw/main/marz-sub.sh)
 ```
 
 2. Restart Marzban
