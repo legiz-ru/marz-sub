@@ -62,7 +62,7 @@ while true; do
         shablonurl="https://github.com/sm1ky/marzban-sub/raw/master/index.html"
         wget -O "$base_dir/subscription/index.html" "$shablonurl" || echo "Ошибка загрузки index.html"
         sleep 1
-        sed -i -e "s|https://t.me/gozargah_marzban|$tg_escaped_link|g" -e "s|https://github.com/Gozargah/Marzban#donation|$tg_escaped_link|g" "$base_dir/subscription/index.html"
+        sed -i "s#https://t.me/bigdvizh#$tg_escaped_link#g" "$base_dir/subscription/index.html"
         break
     elif [ "$choice" -eq 5 ]; then
         read -p "Введите URL для загрузки: " custom_url
