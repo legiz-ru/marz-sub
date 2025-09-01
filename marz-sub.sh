@@ -35,36 +35,50 @@ read -p "Введите вашу Telegram ссылку, которая буде�
 # Загрузка шаблона подписки
 while true; do
     echo "Выберите шаблон для скачивания:"
-    echo "1) marz-sub fork by legiz (https://github.com/cortez24rus/marz-sub)"
-    echo "2) marzbanify-template fork by legiz (https://github.com/legiz-ru/marzbanify-template)"
-    echo "3) marzban-sub-page by streletskiy (https://github.com/streletskiy/marzban-sub-page)"
-    echo "4) marz-sub fork by sm1ky (https://github.com/sm1ky/marzban-sub)"
-    echo "5) your web sub template https link"
+    echo "1) Orion by legiz"
+    echo "2) marz-sub fork by legiz (https://github.com/cortez24rus/marz-sub)"
+    echo "3) marzbanify-template fork by legiz (https://github.com/legiz-ru/marzbanify-template)"
+    echo "4) marzban-sub-page by streletskiy (https://github.com/streletskiy/marzban-sub-page)"
+    echo "5) marz-sub fork by sm1ky (https://github.com/sm1ky/marzban-sub)"
+    echo "6) your web sub template https link"
     read -p "Введите номер шаблона: " choice
 
     if [ "$choice" -eq 1 ]; then
+        shablonurl="https://raw.githubusercontent.com/legiz-ru/Orion/refs/heads/main/marzban/index.html"
+        wget -O "$base_dir/subscription/index.html" "$shablonurl" || echo "Ошибка загрузки index.html"
+        read -p "Введите значение для metaTitle: " meta_title
+        read -p "Введите значение для metaDescription: " meta_description
+        sed -i "s#<%= metaTitle %>#$meta_title#g" "$base_dir/subscription/index.html"
+        sed -i "s#<%= metaDescription %>#$meta_description#g" "$base_dir/subscription/index.html"
+        read -p "Хотите указать свой список приложений формата remnawave 2.1+? (y/n): " custom_app_list_choice
+        if [[ "$custom_app_list_choice" == "y" || "$custom_app_list_choice" == "Y" ]]; then
+            read -p "Введите ссылку на ваш app-config.json: " custom_app_list_url
+            sed -i "s#https://cdn.jsdelivr.net/gh/legiz-ru/my-remnawave@main/sub-page/multiapp/app-config.json#$custom_app_list_url#g" "$base_dir/subscription/index.html"
+        fi
+        break
+    elif [ "$choice" -eq 2 ]; then
         shablonurl="https://github.com/cortez24rus/marz-sub/raw/main/index.html"
         wget -O "$base_dir/subscription/index.html" "$shablonurl" || echo "Ошибка загрузки index.html"
         sed -i "s#https://t.me/yourID#$tg_escaped_link#g" "$base_dir/subscription/index.html"
         break
-    elif [ "$choice" -eq 2 ]; then
+    elif [ "$choice" -eq 3 ]; then
         shablonurl="https://github.com/legiz-ru/marzbanify-template/raw/main/index.html"
         wget -O "$base_dir/subscription/index.html" "$shablonurl" || echo "Ошибка загрузки index.html"
         sed -i "s#https://t.me/yourID#$tg_escaped_link#g" "$base_dir/subscription/index.html"
         break
-    elif [ "$choice" -eq 3 ]; then
+    elif [ "$choice" -eq 4 ]; then
         shablonurl="https://github.com/streletskiy/marzban-sub-page/raw/main/index.html"
         wget -O "$base_dir/subscription/index.html" "$shablonurl" || echo "Ошибка загрузки index.html"
         sleep 1
         sed -i -e "s|https://t.me/gozargah_marzban|$tg_escaped_link|g" -e "s|https://github.com/Gozargah/Marzban#donation|$tg_escaped_link|g" "$base_dir/subscription/index.html"
         break
-    elif [ "$choice" -eq 4 ]; then
+    elif [ "$choice" -eq 5 ]; then
         shablonurl="https://github.com/sm1ky/marzban-sub/raw/master/index.html"
         wget -O "$base_dir/subscription/index.html" "$shablonurl" || echo "Ошибка загрузки index.html"
         sleep 1
         sed -i "s#https://t.me/bigdvizh#$tg_escaped_link#g" "$base_dir/subscription/index.html"
         break
-    elif [ "$choice" -eq 5 ]; then
+    elif [ "$choice" -eq 6 ]; then
         read -p "Введите URL для загрузки: " custom_url
         if [[ "$custom_url" =~ ^https?:// ]]; then
             shablonurl="$custom_url"
