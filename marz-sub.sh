@@ -30,7 +30,28 @@ for dir in "${dirs[@]}"; do
 done
 
 # Запрос пользовательской ссылки
-read -p "Введите вашу Telegram ссылку, которая будет расположена на странице подписки (например, https://t.me/yourID/): " tg_escaped_link
+read -p "Введите вашу Telegram ссылку, которая будет расположена на странице подписки (например, https://t.me/legiz_trashbag/): " tg_escaped_link
+
+# Функция для замены переменных с поддержкой значений по умолчанию
+replace_value() {
+    local placeholder="$1"
+    local user_value="$2"
+    local default_value="$3"
+    local file="$4"
+    
+    # Выбираем значение: пользовательское или по умолчанию
+    if [ -z "$user_value" ]; then
+        value="$default_value"
+    else
+        value="$user_value"
+    fi
+    
+    # Экранируем специальные символы для sed
+    escaped_value=$(echo "$value" | sed 's/[&/\]/\\&/g')
+    
+    # Замена в файле
+    sed -i "s|<%= $placeholder %>|$escaped_value|g" "$file"
+}
 
 # Загрузка шаблона подписки
 while true; do
@@ -46,15 +67,48 @@ while true; do
     if [ "$choice" -eq 1 ]; then
         shablonurl="https://raw.githubusercontent.com/legiz-ru/Orion/refs/heads/main/marzban/index.html"
         wget -O "$base_dir/subscription/index.html" "$shablonurl" || echo "Ошибка загрузки index.html"
-        read -p "Введите значение для metaTitle: " meta_title
-        read -p "Введите значение для metaDescription: " meta_description
-        sed -i "s#<%= metaTitle %>#$meta_title#g" "$base_dir/subscription/index.html"
-        sed -i "s#<%= metaDescription %>#$meta_description#g" "$base_dir/subscription/index.html"
-        read -p "Хотите указать свой список приложений формата remnawave 2.1+? (y/n): " custom_app_list_choice
-        if [[ "$custom_app_list_choice" == "y" || "$custom_app_list_choice" == "Y" ]]; then
-            read -p "Введите ссылку на ваш app-config.json: " custom_app_list_url
-            sed -i "s#https://cdn.jsdelivr.net/gh/legiz-ru/my-remnawave@main/sub-page/multiapp/app-config.json#$custom_app_list_url#g" "$base_dir/subscription/index.html"
+        
+        echo ""
+        echo "=== Настройка параметров Orion ==="
+        echo ""
+        
+        # Meta Title
+        read -p "Введите мета-заголовок страницы [по умолчанию: OrionMarz sub]: " meta_title
+        
+        # Meta Description
+        read -p "Введите мета-описание страницы [по умолчанию: Manage your marzban subscription...]: " meta_description
+        
+        # Branding Title
+        read -p "Введите название бренда [по умолчанию: OrionMarz]: " branding_title
+        
+        # Branding Logo URL
+        read -p "Введите URL логотипа бренда [по умолчанию: Prizrak-box.svg]: " branding_logo
+        
+        # Support URL (используем уже введённую telegram ссылку или спрашиваем новую)
+        read -p "Введите ссылку поддержки [по умолчанию: $tg_escaped_link]: " support_url
+        if [ -z "$support_url" ]; then
+            support_url="$tg_escaped_link"
         fi
+        
+        # SubPage Config URL
+        read -p "Введите URL конфигурации страницы подписки [по умолчанию: multiapp.json]: " subpage_config
+        
+        echo ""
+        echo "Применение настроек..."
+        
+        # Применяем все замены с использованием функции replace_value
+        replace_value "metaTitle" "$meta_title" "OrionMarz sub" "$base_dir/subscription/index.html"
+        replace_value "metaDescription" "$meta_description" "Manage your marzban subscription and download configuration files for various clients." "$base_dir/subscription/index.html"
+        replace_value "brandingTitle" "$branding_title" "OrionMarz" "$base_dir/subscription/index.html"
+        replace_value "brandingLogoUrl" "$branding_logo" "https://cdn.jsdelivr.net/gh/arpicme/Proxy-App-Icon-set@refs/heads/main/white_background/Prizrak-box.svg" "$base_dir/subscription/index.html"
+        replace_value "brandingSupportUrl" "$support_url" "https://t.me/legiz_trashbag" "$base_dir/subscription/index.html"
+        replace_value "subPageConfig" "$subpage_config" "https://cdn.jsdelivr.net/gh/legiz-ru/my-remnawave@main/sub-page/subpage-config/multiapp.json" "$base_dir/subscription/index.html"
+        
+        # Для обратной совместимости также заменяем старые переменные (если они есть в шаблоне)
+        replace_value "supportUrl" "$support_url" "https://t.me/legiz_trashbag" "$base_dir/subscription/index.html"
+        replace_value "appsConfigUrl" "$subpage_config" "https://cdn.jsdelivr.net/gh/legiz-ru/my-remnawave@main/sub-page/subpage-config/multiapp.json" "$base_dir/subscription/index.html"
+        
+        echo "Настройки Orion применены успешно!"
         break
     elif [ "$choice" -eq 2 ]; then
         shablonurl="https://github.com/cortez24rus/marz-sub/raw/main/index.html"
